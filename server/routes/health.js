@@ -1,5 +1,5 @@
 import express from 'express';
-import { query, getOne } from '../db/index.js';
+import { getOne } from '../db/index.js';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     
     res.json({
       status: 'OK',
-      offlineMode: true,
+      mode: 'Web ERP / Cloud',
       database: dbTest?.connected === 1 ? 'Connected (SQLite WAL)' : 'Error',
       timestamp: new Date().toISOString(),
       shopName: settings?.shop_name || 'Jagdamba Cloth House'

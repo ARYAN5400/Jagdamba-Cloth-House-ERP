@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Database, Download, Upload, ShieldCheck, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
@@ -10,13 +10,26 @@ export function BackupRestore() {
   const { addToast } = useApp();
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef(null);
+  const isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
 
   const handleBackup = async () => {
     setLoading(true);
     try {
-      const res = await api.post('/backup/create');
-      if (res.data && !res.data.cancelled) {
-        addToast(`Backup created successfully at: ${res.data.path}`, 'success');
+      if (isElectron) {
+        const res = await api.post('/backup/create');
+        if (res.data && !res.data.cancelled) {
+          addToast(`Backup created successfully at: ${res.data.path}`, 'success');
+        }
+      } else {
+        // Web Browser Mode: Trigger direct file download from Express API
+        const link = document.createElement('a');
+        link.href = '/api/backup/download';
+        link.download = `JAGDAMBA_BACKUP_${new Date().toISOString().split('T')[0]}.db`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        addToast('SQLite Database backup downloaded successfully!', 'success');
       }
     } catch (err) {
       addToast(err.message || 'Failed to create backup', 'error');
@@ -25,19 +38,54 @@ export function BackupRestore() {
     }
   };
 
-  const handleRestore = async () => {
-    setIsRestoreModalOpen(false);
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.db')) {
+      addToast('Please select a valid SQLite .db backup file', 'warning');
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await api.post('/backup/restore');
-      if (res.data && !res.data.cancelled) {
-        addToast('Database restored successfully! Application reloaded.', 'success');
-        window.location.reload();
+      const formData = new FormData();
+      formData.append('backupFile', file);
+
+      const res = await api.post('/backup/restore', formData);
+      if (res && res.success !== false) {
+        addToast('Database restored successfully! Reloading...', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       }
     } catch (err) {
-      addToast(err.message || 'Failed to restore database', 'error');
+      addToast(err.message || 'Failed to restore database from selected file', 'error');
     } finally {
       setLoading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRestore = async () => {
+    setIsRestoreModalOpen(false);
+
+    if (isElectron) {
+      setLoading(true);
+      try {
+        const res = await api.post('/backup/restore');
+        if (res.data && !res.data.cancelled) {
+          addToast('Database restored successfully! Application reloaded.', 'success');
+          window.location.reload();
+        }
+      } catch (err) {
+        addToast(err.message || 'Failed to restore database', 'error');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // In web browser mode, open file picker
+      fileInputRef.current?.click();
     }
   };
 
@@ -45,18 +93,27 @@ export function BackupRestore() {
     <div className="space-y-6 max-w-5xl mx-auto">
       <div>
         <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Database Backup & Security</h2>
-        <p className="text-xs text-slate-500 mt-1">Export local SQLite snapshots to protect your business records from hardware failures</p>
+        <p className="text-xs text-slate-500 mt-1">Export SQLite database snapshots to protect your business records from data loss</p>
       </div>
+
+      {/* Hidden File Input for Web Mode Database Restore */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".db"
+        className="hidden"
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Backup Card */}
-        <Card title="Export Local Database Backup">
+        <Card title="Export Database Backup">
           <div className="space-y-4">
             <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-100 flex items-start gap-3">
               <ShieldCheck className="w-6 h-6 text-brand-600 flex-shrink-0 mt-0.5" />
               <div className="text-xs text-slate-600 leading-relaxed">
                 <span className="font-bold text-slate-800 block text-sm">Recommended Daily Routine</span>
-                Create a copy of your <b>retail_erp.db</b> database file onto a USB flash drive or secondary drive at the end of every business day.
+                Download a copy of your <b>retail_erp.db</b> database file onto your device or external drive at the end of every business day.
               </div>
             </div>
 
@@ -67,7 +124,7 @@ export function BackupRestore() {
               size="lg"
               className="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3"
             >
-              {loading ? 'Processing...' : 'Backup Now (.db File)'}
+              {loading ? 'Processing...' : 'Download Backup (.db File)'}
             </Button>
           </div>
         </Card>
@@ -91,7 +148,7 @@ export function BackupRestore() {
               size="lg"
               className="w-full border-amber-300 text-amber-900 hover:bg-amber-100 font-bold py-3"
             >
-              Restore Previous Backup
+              {loading ? 'Restoring...' : 'Restore Previous Backup'}
             </Button>
           </div>
         </Card>
@@ -105,13 +162,13 @@ export function BackupRestore() {
       >
         <div className="space-y-4">
           <p className="text-sm text-slate-700 leading-relaxed">
-            Are you sure you want to restore a database backup? This will replace all your current products, sales invoices, and ledger records.
+            Are you sure you want to restore a database backup? This will replace all your current products, sales invoices, and ledger records with the uploaded snapshot.
           </p>
 
           <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
             <Button variant="outline" onClick={() => setIsRestoreModalOpen(false)}>Cancel</Button>
             <Button onClick={handleRestore} className="bg-amber-600 hover:bg-amber-700 text-white font-bold">
-              Yes, Choose Backup File & Restore
+              Yes, Choose .db Backup File & Restore
             </Button>
           </div>
         </div>

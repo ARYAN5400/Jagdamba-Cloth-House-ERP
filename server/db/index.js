@@ -7,19 +7,28 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Ensure data directory exists
-const dataDir = process.env.APPDATA 
-  ? path.join(process.env.APPDATA, 'jagdamba-retail-erp', 'data')
-  : path.join(__dirname, '../../data');
+export const getDataDir = () => {
+  if (process.env.DATA_DIR) {
+    return process.env.DATA_DIR;
+  }
+  if (process.env.APPDATA) {
+    return path.join(process.env.APPDATA, 'jagdamba-retail-erp', 'data');
+  }
+  return path.join(process.cwd(), 'data');
+};
 
+const dataDir = getDataDir();
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-const dbPath = path.join(dataDir, 'retail_erp.db');
+export const getDbPath = () => path.join(getDataDir(), 'retail_erp.db');
+
+const dbPath = getDbPath();
 console.log(`[Database] Connecting to SQLite at: ${dbPath}`);
 
 sqlite3.verbose();
-const db = new sqlite3.Database(dbPath, (err) => {
+let db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('[Database Connection Error]:', err);
   } else {
@@ -38,7 +47,7 @@ export const query = (sql, params = []) => {
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) reject(err);
-      else resolve(rows);
+      else resolve(rows || []);
     });
   });
 };
@@ -47,7 +56,7 @@ export const getOne = (sql, params = []) => {
   return new Promise((resolve, reject) => {
     db.get(sql, params, (err, row) => {
       if (err) reject(err);
-      else resolve(row);
+      else resolve(row || null);
     });
   });
 };
@@ -59,6 +68,31 @@ export const run = (sql, params = []) => {
       else resolve({ lastID: this.lastID, changes: this.changes });
     });
   });
+};
+
+export const closeDatabase = () => {
+  return new Promise((resolve, reject) => {
+    db.close((err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+};
+
+export const reconnectDatabase = () => {
+  const currentDbPath = getDbPath();
+  db = new sqlite3.Database(currentDbPath, (err) => {
+    if (err) {
+      console.error('[Database Reconnection Error]:', err);
+    } else {
+      console.log('[Database] SQLite reconnected successfully.');
+    }
+  });
+  db.serialize(() => {
+    db.run('PRAGMA foreign_keys = ON');
+    db.run('PRAGMA journal_mode = WAL');
+  });
+  return db;
 };
 
 export default db;

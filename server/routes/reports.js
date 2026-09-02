@@ -7,50 +7,77 @@ const router = express.Router();
 router.get('/dashboard-summary', async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
+    const firstDayOfMonth = `${today.substring(0, 7)}-01`;
 
-    const todaySales = await getOne(`
-      SELECT COUNT(*) as bill_count, COALESCE(SUM(net_amount), 0) as total_sales 
-      FROM sales WHERE sale_date = ?
-    `, [today]);
+    // Today sales & bill count
+    const todaySalesRow = await getOne('SELECT SUM(net_amount) as total, COUNT(*) as count FROM sales WHERE sale_date = ?', [today]);
+    const todaySales = todaySalesRow?.total || 0;
+    const todayBills = todaySalesRow?.count || 0;
 
-    const monthSales = await getOne(`
-      SELECT COALESCE(SUM(net_amount), 0) as total_sales 
-      FROM sales WHERE strftime('%Y-%m', sale_date) = strftime('%Y-%m', 'now')
-    `);
+    // Payment modes today
+    const cashRow = await getOne("SELECT SUM(paid_amount) as total FROM sales WHERE sale_date = ? AND payment_mode = 'Cash'", [today]);
+    const upiRow = await getOne("SELECT SUM(paid_amount) as total FROM sales WHERE sale_date = ? AND payment_mode = 'UPI'", [today]);
+    const creditRow = await getOne("SELECT SUM(due_amount) as total FROM sales WHERE sale_date = ? AND (payment_mode = 'Credit' OR due_amount > 0)", [today]);
 
-    const totalStock = await getOne(`
-      SELECT COUNT(*) as item_count, COALESCE(SUM(stock_quantity), 0) as total_quantity, COALESCE(SUM(stock_quantity * purchase_price), 0) as stock_valuation 
-      FROM products
-    `);
+    // Month Sales
+    const monthSalesRow = await getOne('SELECT SUM(net_amount) as total FROM sales WHERE sale_date >= ?', [firstDayOfMonth]);
+    const monthSales = monthSalesRow?.total || 0;
 
+    // Today Purchases
+    const todayPurchasesRow = await getOne('SELECT SUM(net_amount) as total FROM purchases WHERE purchase_date = ?', [today]);
+    const todayPurchases = todayPurchasesRow?.total || 0;
+
+    // Today Expenses
+    const todayExpensesRow = await getOne('SELECT SUM(amount) as total FROM expenses WHERE expense_date = ?', [today]);
+    const todayExpenses = todayExpensesRow?.total || 0;
+
+    // Profit Today (Estimated: Sales Net - Expense)
+    const todayProfit = todaySales - todayExpenses;
+
+    // Total Stock Valuation
+    const stockRow = await getOne('SELECT SUM(stock_quantity * selling_price) as valuation, SUM(stock_quantity) as totalQty, COUNT(*) as itemCount FROM products');
+    const totalStockValuation = stockRow?.valuation || 0;
+    const totalStockQuantity = stockRow?.totalQty || 0;
+    const totalItemTypes = stockRow?.itemCount || 0;
+
+    // Udhar Balance
+    const udharRow = await getOne('SELECT SUM(current_balance) as total FROM customers WHERE current_balance > 0');
+    const totalUdharBalance = udharRow?.total || 0;
+
+    // Low stock items
     const lowStockAlerts = await query(`
-      SELECT p.*, c.name as category_name, b.name as brand_name 
-      FROM products p
+      SELECT p.*, b.name as brand_name, c.name as category_name 
+      FROM products p 
+      LEFT JOIN brands b ON p.brand_id = b.id 
       LEFT JOIN categories c ON p.category_id = c.id
-      LEFT JOIN brands b ON p.brand_id = b.id
-      WHERE p.stock_quantity <= p.min_stock_alert
+      WHERE p.stock_quantity <= p.min_stock_alert 
       ORDER BY p.stock_quantity ASC
+      LIMIT 10
     `);
 
-    const totalUdhar = await getOne(`
-      SELECT COALESCE(SUM(current_balance), 0) as total_udhar FROM customers WHERE current_balance > 0
-    `);
-
+    // Recent Sales
     const recentSales = await query(`
       SELECT s.*, c.name as customer_name 
       FROM sales s 
       LEFT JOIN customers c ON s.customer_id = c.id 
-      ORDER BY s.id DESC LIMIT 5
+      ORDER BY s.id DESC 
+      LIMIT 10
     `);
 
     res.json({
-      todaySales: todaySales.total_sales,
-      todayBills: todaySales.bill_count,
-      monthSales: monthSales.total_sales,
-      totalStockValuation: totalStock.stock_valuation,
-      totalStockQuantity: totalStock.total_quantity,
-      totalItemTypes: totalStock.item_count,
-      totalUdharBalance: totalUdhar.total_udhar,
+      todaySales,
+      todayBills,
+      cashCollection: cashRow?.total || 0,
+      upiCollection: upiRow?.total || 0,
+      creditSales: creditRow?.total || 0,
+      monthSales,
+      todayPurchases,
+      todayExpenses,
+      todayProfit,
+      totalStockValuation,
+      totalStockQuantity,
+      totalItemTypes,
+      totalUdharBalance,
       lowStockAlerts,
       recentSales
     });
@@ -59,27 +86,113 @@ router.get('/dashboard-summary', async (req, res) => {
   }
 });
 
-// GST Sales Report Data (for CA Export)
-router.get('/gst-sales-report', async (req, res) => {
+// Sales Report & GST Report Data
+const getSalesReportHandler = async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { fromDate, toDate, startDate, endDate, paymentMode } = req.query;
+    const start = fromDate || startDate;
+    const end = toDate || endDate;
+
     let sql = `
-      SELECT s.invoice_no, s.sale_date, c.name as customer_name, c.gstin as customer_gstin,
-             s.subtotal, s.discount, s.tax_amount, s.net_amount, s.payment_mode
+      SELECT s.*, c.name as customer_name, c.gstin as customer_gstin, c.phone as customer_phone
       FROM sales s
       LEFT JOIN customers c ON s.customer_id = c.id
       WHERE 1=1
     `;
     const params = [];
 
-    if (startDate && endDate) {
-      sql += ` AND s.sale_date BETWEEN ? AND ?`;
-      params.push(startDate, endDate);
+    if (start) {
+      sql += ` AND s.sale_date >= ?`;
+      params.push(start);
+    }
+    if (end) {
+      sql += ` AND s.sale_date <= ?`;
+      params.push(end);
+    }
+    if (paymentMode && paymentMode !== 'All') {
+      sql += ` AND s.payment_mode = ?`;
+      params.push(paymentMode);
     }
 
-    sql += ` ORDER BY s.sale_date ASC`;
-    const salesReport = await query(sql, params);
-    res.json(salesReport);
+    sql += ` ORDER BY s.id DESC`;
+    const sales = await query(sql, params);
+
+    for (const s of sales) {
+      s.items = await query('SELECT * FROM sale_items WHERE sale_id = ?', [s.id]);
+    }
+
+    res.json(sales);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+router.get('/sales', getSalesReportHandler);
+router.get('/gst-sales-report', getSalesReportHandler);
+
+// Purchase Report
+router.get('/purchases', async (req, res) => {
+  try {
+    const { fromDate, toDate, startDate, endDate } = req.query;
+    const start = fromDate || startDate;
+    const end = toDate || endDate;
+
+    let sql = `
+      SELECT p.*, s.name as supplier_name, s.company_name 
+      FROM purchases p 
+      LEFT JOIN suppliers s ON p.supplier_id = s.id 
+      WHERE 1=1
+    `;
+    const params = [];
+
+    if (start) {
+      sql += ` AND p.purchase_date >= ?`;
+      params.push(start);
+    }
+    if (end) {
+      sql += ` AND p.purchase_date <= ?`;
+      params.push(end);
+    }
+
+    sql += ` ORDER BY p.id DESC`;
+    const purchases = await query(sql, params);
+
+    for (const p of purchases) {
+      p.items = await query('SELECT * FROM purchase_items WHERE purchase_id = ?', [p.id]);
+    }
+
+    res.json(purchases);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Expense Report
+router.get('/expenses', async (req, res) => {
+  try {
+    const { fromDate, toDate, startDate, endDate, category } = req.query;
+    const start = fromDate || startDate;
+    const end = toDate || endDate;
+
+    let sql = `SELECT * FROM expenses WHERE 1=1`;
+    const params = [];
+
+    if (start) {
+      sql += ` AND expense_date >= ?`;
+      params.push(start);
+    }
+    if (end) {
+      sql += ` AND expense_date <= ?`;
+      params.push(end);
+    }
+    if (category && category !== 'All') {
+      sql += ` AND category = ?`;
+      params.push(category);
+    }
+
+    sql += ` ORDER BY id DESC`;
+    const expenses = await query(sql, params);
+    res.json(expenses);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

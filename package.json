@@ -5,19 +5,24 @@
   "main": "electron/main.js",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/cleanup-port.js",
-    "dev:frontend": "node scripts/start-frontend.js",
+    "dev:server": "node server/index.js",
+    "dev:frontend": "vite",
+    "dev:web": "concurrently --kill-others \"npm run dev:server\" \"npm run dev:frontend\"",
     "dev:electron": "wait-on -t 30000 http://127.0.0.1:5173 && electron .",
-    "dev": "concurrently --kill-others \"npm run dev:frontend\" \"npm run dev:electron\"",
+    "dev": "concurrently --kill-others \"npm run dev:server\" \"npm run dev:frontend\" \"npm run dev:electron\"",
     "build:frontend": "vite build",
-    "build": "vite build"
+    "build": "vite build",
+    "start": "node server/index.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "exceljs": "^4.4.0",
+    "express": "^4.21.2",
     "framer-motion": "^11.18.2",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.475.0",
+    "multer": "^1.4.5-lts.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.2",

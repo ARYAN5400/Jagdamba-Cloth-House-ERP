@@ -14,11 +14,11 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { name, company_name, phone, email, address, gstin } = req.body;
+    const { name, company_name, phone, email, address, gstin, notes, current_balance } = req.body;
     const result = await run(`
-      INSERT INTO suppliers (name, company_name, phone, email, address, gstin, current_balance)
-      VALUES (?, ?, ?, ?, ?, ?, 0)
-    `, [name, company_name || '', phone, email || '', address || '', gstin || '']);
+      INSERT INTO suppliers (name, company_name, phone, email, address, gstin, notes, current_balance)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `, [name, company_name || '', phone || '', email || '', address || '', gstin || '', notes || '', parseFloat(current_balance || 0)]);
 
     const created = await getOne('SELECT * FROM suppliers WHERE id = ?', [result.lastID]);
     res.status(201).json(created);

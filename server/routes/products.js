@@ -6,7 +6,7 @@ const router = express.Router();
 // GET all products with Category & Brand names
 router.get('/', async (req, res) => {
   try {
-    const { search, category_id, brand_id } = req.query;
+    const { search, category_id, brand_id, low_stock } = req.query;
     let sql = `
       SELECT p.*, c.name as category_name, b.name as brand_name 
       FROM products p
@@ -17,9 +17,9 @@ router.get('/', async (req, res) => {
     const params = [];
 
     if (search) {
-      sql += ` AND (p.name LIKE ? OR p.design_no LIKE ? OR p.barcode LIKE ? OR p.sku_code LIKE ?)`;
+      sql += ` AND (p.name LIKE ? OR p.design_no LIKE ? OR p.barcode LIKE ? OR p.sku_code LIKE ? OR p.fabric_type LIKE ?)`;
       const term = `%${search}%`;
-      params.push(term, term, term, term);
+      params.push(term, term, term, term, term);
     }
 
     if (category_id) {
@@ -32,7 +32,11 @@ router.get('/', async (req, res) => {
       params.push(brand_id);
     }
 
-    sql += ` ORDER BY p.id DESC`;
+    if (low_stock === 'true' || low_stock === true || low_stock === '1') {
+      sql += ` AND p.stock_quantity <= p.min_stock_alert`;
+    }
+
+    sql += ` ORDER BY p.name ASC`;
     const products = await query(sql, params);
     res.json(products);
   } catch (error) {
@@ -60,25 +64,45 @@ router.get('/barcode/:barcode', async (req, res) => {
   }
 });
 
+// GET single product by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const product = await getOne(`
+      SELECT p.*, c.name as category_name, b.name as brand_name 
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      LEFT JOIN brands b ON p.brand_id = b.id
+      WHERE p.id = ?
+    `, [req.params.id]);
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // CREATE new Product
 router.post('/', async (req, res) => {
   try {
-    const {
-      sku_code, barcode, design_no, name, category_id, brand_id, fabric_type,
-      unit_type, purchase_price, selling_price, wholesale_price, mrp, gst_rate, hsn_code, stock_quantity, min_stock_alert
-    } = req.body;
-
-    const generatedBarcode = barcode || `890${Date.now().toString().slice(-7)}`;
-    const generatedSku = sku_code || `SKU-${Date.now().toString().slice(-6)}`;
+    const data = req.body;
+    const barcode = data.barcode || `890${Math.floor(10000000 + Math.random() * 90000000)}`;
+    const sku = data.sku_code || `SKU-${(data.design_no || 'ITM').toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`;
 
     const result = await run(`
       INSERT INTO products (
-        sku_code, barcode, design_no, name, category_id, brand_id, fabric_type,
-        unit_type, purchase_price, selling_price, wholesale_price, mrp, gst_rate, hsn_code, stock_quantity, min_stock_alert
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        sku_code, barcode, design_no, name, category_id, brand_id, fabric_type, colour, size,
+        unit_type, purchase_price, selling_price, wholesale_price, mrp, gst_rate, hsn_code, opening_stock, stock_quantity, min_stock_alert, notes
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
-      generatedSku, generatedBarcode, design_no || name, name, category_id || null, brand_id || null, fabric_type || 'Cotton',
-      unit_type || 'piece', purchase_price || 0, selling_price || 0, wholesale_price || 0, mrp || 0, gst_rate || 5, hsn_code || '5407', stock_quantity || 0, min_stock_alert || 5
+      sku, barcode, data.design_no || '', data.name, data.category_id || null, data.brand_id || null, data.fabric_type || 'Cotton',
+      data.colour || '', data.size || '', data.unit_type || 'piece',
+      parseFloat(data.purchase_price || 0), parseFloat(data.selling_price || 0), parseFloat(data.wholesale_price || 0),
+      parseFloat(data.mrp || 0), parseFloat(data.gst_rate || 5), data.hsn_code || '5407',
+      parseFloat(data.stock_quantity || 0), parseFloat(data.stock_quantity || 0), parseFloat(data.min_stock_alert || 5),
+      data.notes || ''
     ]);
 
     const created = await getOne('SELECT * FROM products WHERE id = ?', [result.lastID]);
@@ -92,20 +116,20 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      sku_code, barcode, design_no, name, category_id, brand_id, fabric_type,
-      unit_type, purchase_price, selling_price, wholesale_price, mrp, gst_rate, hsn_code, stock_quantity, min_stock_alert
-    } = req.body;
+    const data = req.body;
 
     await run(`
       UPDATE products SET 
-        sku_code = ?, barcode = ?, design_no = ?, name = ?, category_id = ?, brand_id = ?, fabric_type = ?,
-        unit_type = ?, purchase_price = ?, selling_price = ?, wholesale_price = ?, mrp = ?, gst_rate = ?, hsn_code = ?, stock_quantity = ?, min_stock_alert = ?,
-        updated_at = CURRENT_TIMESTAMP
+        design_no = ?, name = ?, category_id = ?, brand_id = ?, fabric_type = ?, colour = ?, size = ?,
+        unit_type = ?, purchase_price = ?, selling_price = ?, wholesale_price = ?, mrp = ?, gst_rate = ?, 
+        hsn_code = ?, stock_quantity = ?, min_stock_alert = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `, [
-      sku_code, barcode, design_no, name, category_id, brand_id, fabric_type,
-      unit_type, purchase_price, selling_price, wholesale_price, mrp, gst_rate, hsn_code, stock_quantity, min_stock_alert, id
+      data.design_no, data.name, data.category_id || null, data.brand_id || null, data.fabric_type,
+      data.colour || '', data.size || '', data.unit_type, parseFloat(data.purchase_price || 0),
+      parseFloat(data.selling_price || 0), parseFloat(data.wholesale_price || 0), parseFloat(data.mrp || 0),
+      parseFloat(data.gst_rate || 5), data.hsn_code || '5407', parseFloat(data.stock_quantity || 0),
+      parseFloat(data.min_stock_alert || 5), data.notes || '', id
     ]);
 
     const updated = await getOne('SELECT * FROM products WHERE id = ?', [id]);
@@ -119,7 +143,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     await run('DELETE FROM products WHERE id = ?', [req.params.id]);
-    res.json({ message: 'Product deleted successfully' });
+    res.json({ success: true, message: 'Product deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

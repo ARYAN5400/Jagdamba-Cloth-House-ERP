@@ -14,11 +14,11 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { name, phone, address, city, gstin, credit_limit } = req.body;
+    const { name, phone, address, city, gstin, notes, credit_limit } = req.body;
     const result = await run(`
-      INSERT INTO customers (name, phone, address, city, gstin, credit_limit, current_balance)
-      VALUES (?, ?, ?, ?, ?, ?, 0)
-    `, [name, phone, address || '', city || 'Local', gstin || '', credit_limit || 20000]);
+      INSERT INTO customers (name, phone, address, city, gstin, notes, credit_limit, current_balance)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+    `, [name, phone, address || '', city || 'Local', gstin || '', notes || '', parseFloat(credit_limit || 20000)]);
 
     const created = await getOne('SELECT * FROM customers WHERE id = ?', [result.lastID]);
     res.status(201).json(created);
@@ -38,7 +38,7 @@ router.get('/:id/ledger', async (req, res) => {
       FROM customer_transactions t
       LEFT JOIN sales s ON t.sale_id = s.id
       WHERE t.customer_id = ?
-      ORDER BY t.created_at DESC
+      ORDER BY t.id DESC
     `, [req.params.id]);
 
     res.json({ customer, transactions });
@@ -52,17 +52,16 @@ router.post('/:id/payment', async (req, res) => {
   try {
     const { amount, payment_mode, notes } = req.body;
     const customerId = req.params.id;
+    const amt = parseFloat(amount || 0);
 
+    await run('UPDATE customers SET current_balance = current_balance - ? WHERE id = ?', [amt, customerId]);
     await run(`
       INSERT INTO customer_transactions (customer_id, type, amount, payment_mode, notes)
       VALUES (?, 'CREDIT', ?, ?, ?)
-    `, [customerId, amount, payment_mode || 'Cash', notes || 'Udhar Payment Collection']);
-
-    // Deduct from customer current balance
-    await run('UPDATE customers SET current_balance = current_balance - ? WHERE id = ?', [amount, customerId]);
+    `, [customerId, amt, payment_mode || 'Cash', notes || 'Udhar Payment Collection']);
 
     const updatedCustomer = await getOne('SELECT * FROM customers WHERE id = ?', [customerId]);
-    res.json({ message: 'Payment recorded successfully', customer: updatedCustomer });
+    res.json({ success: true, message: 'Payment recorded successfully', customer: updatedCustomer });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
