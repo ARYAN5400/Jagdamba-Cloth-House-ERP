@@ -13,6 +13,15 @@ export function AppProvider({ children }) {
   });
   const [isDbConnected, setIsDbConnected] = useState(false);
   const [toasts, setToasts] = useState([]);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarOpen(prev => !prev);
+  };
+
+  const closeMobileSidebar = () => {
+    setIsMobileSidebarOpen(false);
+  };
 
   const addToast = (message, type = 'info') => {
     const id = Date.now();
@@ -58,7 +67,11 @@ export function AppProvider({ children }) {
       toasts,
       addToast,
       removeToast,
-      refreshSettings: fetchHealthAndSettings
+      refreshSettings: fetchHealthAndSettings,
+      isMobileSidebarOpen,
+      setIsMobileSidebarOpen,
+      toggleMobileSidebar,
+      closeMobileSidebar
     }}>
       {children}
     </AppContext.Provider>

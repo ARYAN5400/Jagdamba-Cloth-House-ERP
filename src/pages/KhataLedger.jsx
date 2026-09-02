@@ -112,14 +112,17 @@ export function KhataLedger() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="flex flex-wrap justify-between items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Customer Khata & Udhar Register</h2>
-          <p className="text-xs text-slate-500 mt-1">Track individual customer credit balances, payment receipts, and ledger statements</p>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Customer Khata (Udhar / Credit Ledger)</h2>
+          <p className="text-xs text-slate-500 mt-1">Track pending customer dues, payments received & complete ledger statements</p>
         </div>
+        <Button onClick={() => {}} icon={UserPlus} className="bg-brand-600 hover:bg-brand-500 text-white font-bold w-full sm:w-auto text-xs">
+          + Add New Customer
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Customer Directory List */}
         <Card className="lg:col-span-1" title="Customer Accounts">
           <div className="space-y-3">
@@ -175,10 +178,10 @@ export function KhataLedger() {
         <Card className="lg:col-span-2" title={selectedCustomer ? `${selectedCustomer.name}'s Ledger Statement` : 'Select a Customer Account'}>
           {selectedCustomer ? (
             <div className="space-y-4">
-              <div className="flex flex-wrap justify-between items-center p-4 rounded-xl bg-slate-900 text-white gap-4">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center p-3.5 sm:p-4 rounded-xl bg-slate-900 text-white gap-3 sm:gap-4">
                 <div>
                   <span className="text-xs text-slate-400 block font-medium">Individual Outstanding Udhar Balance</span>
-                  <div className="text-2xl font-black text-brand-400 font-mono">
+                  <div className="text-xl sm:text-2xl font-black text-brand-400 font-mono">
                     ₹{parseFloat(selectedCustomer.current_balance || 0).toFixed(2)}
                   </div>
                   <span className="text-[11px] text-slate-400 font-medium">
@@ -188,15 +191,15 @@ export function KhataLedger() {
                 <Button
                   onClick={openPaymentModal}
                   disabled={parseFloat(selectedCustomer.current_balance || 0) <= 0}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md px-5 py-2.5 rounded-xl disabled:opacity-50"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md px-5 py-2.5 rounded-xl disabled:opacity-50 w-full sm:w-auto"
                   icon={IndianRupee}
                 >
                   Collect Udhar Payment
                 </Button>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse text-xs min-w-[480px]">
                   <thead>
                     <tr className="font-extrabold text-slate-500 uppercase border-b border-slate-200 bg-slate-50">
                       <th className="p-2.5">Date</th>
@@ -287,9 +290,9 @@ export function KhataLedger() {
               onChange={(e) => setNotes(e.target.value)}
             />
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-              <Button variant="outline" type="button" onClick={() => setIsPaymentModalOpen(false)}>Cancel</Button>
-              <Button type="submit" icon={CheckCircle2} className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 pt-4 border-t border-slate-100">
+              <Button variant="outline" type="button" onClick={() => setIsPaymentModalOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+              <Button type="submit" icon={CheckCircle2} className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs w-full sm:w-auto">
                 Record Payment Clearance
               </Button>
             </div>

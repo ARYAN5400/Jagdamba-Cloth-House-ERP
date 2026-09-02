@@ -238,17 +238,17 @@ export function Inventory() {
 
       {/* Products Table */}
       <Card>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left border-collapse min-w-[640px]">
             <thead>
               <tr className="text-xs font-bold text-slate-500 uppercase border-b border-slate-200 bg-slate-50/80">
-                <th className="p-4">Product & Design No</th>
-                <th className="p-4">Brand & Category</th>
-                <th className="p-4">Fabric / Unit</th>
-                <th className="p-4 text-right">Purchase Price</th>
-                <th className="p-4 text-right">Selling Rate</th>
-                <th className="p-4 text-center">Current Stock</th>
-                <th className="p-4 text-center">Actions</th>
+                <th className="p-3 sm:p-4">Product & Design No</th>
+                <th className="p-3 sm:p-4">Brand & Category</th>
+                <th className="p-3 sm:p-4">Fabric / Unit</th>
+                <th className="p-3 sm:p-4 text-right">Purchase Price</th>
+                <th className="p-3 sm:p-4 text-right">Selling Rate</th>
+                <th className="p-3 sm:p-4 text-center">Current Stock</th>
+                <th className="p-3 sm:p-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
@@ -274,7 +274,7 @@ export function Inventory() {
                   const isLowStock = p.stock_quantity <= p.min_stock_alert;
                   return (
                     <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="p-4">
+                      <td className="p-3 sm:p-4">
                         <div className="flex items-center gap-2">
                           <span className="font-extrabold text-slate-900">{p.name}</span>
                           <span className="text-[11px] font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-100">
@@ -286,19 +286,19 @@ export function Inventory() {
                           {p.hsn_code && <span>HSN: {p.hsn_code}</span>}
                         </div>
                       </td>
-                      <td className="p-4">
+                      <td className="p-3 sm:p-4">
                         <div className="font-semibold text-slate-800">{p.brand_name || 'Generic'}</div>
                         <span className="text-xs text-slate-500">{p.category_name || 'Unassigned'}</span>
                       </td>
-                      <td className="p-4">
+                      <td className="p-3 sm:p-4">
                         <div className="flex items-center gap-1.5">
                           <Badge variant="slate">{p.fabric_type || 'Cotton'}</Badge>
                           <Badge variant={p.unit_type === 'meter' ? 'info' : 'slate'}>{p.unit_type}</Badge>
                         </div>
                       </td>
-                      <td className="p-4 text-right font-mono text-slate-600">₹{parseFloat(p.purchase_price || 0).toFixed(2)}</td>
-                      <td className="p-4 text-right font-extrabold text-slate-900">₹{parseFloat(p.selling_price || 0).toFixed(2)}</td>
-                      <td className="p-4 text-center">
+                      <td className="p-3 sm:p-4 text-right font-mono text-slate-600">₹{parseFloat(p.purchase_price || 0).toFixed(2)}</td>
+                      <td className="p-3 sm:p-4 text-right font-extrabold text-slate-900">₹{parseFloat(p.selling_price || 0).toFixed(2)}</td>
+                      <td className="p-3 sm:p-4 text-center">
                         <button
                           onClick={() => {
                             setSelectedProductForStock(p);
@@ -316,7 +316,7 @@ export function Inventory() {
                           <span>{p.stock_quantity} {p.unit_type}s</span>
                         </button>
                       </td>
-                      <td className="p-4 text-center">
+                      <td className="p-3 sm:p-4 text-center">
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => openEditModal(p)}
@@ -350,7 +350,7 @@ export function Inventory() {
         title={editingProductId ? "Edit Product Details" : "+ Add New Clothing / Fabric Item"}
       >
         <form onSubmit={handleSubmit} className="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
               label="Product / Suit Title *"
               required
@@ -367,7 +367,7 @@ export function Inventory() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-semibold text-slate-700">Category</label>
               <select
@@ -392,7 +392,7 @@ export function Inventory() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Input
               label="Fabric Material"
               placeholder="Cotton / Silk / Lawn"
@@ -419,7 +419,7 @@ export function Inventory() {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Input
               label="Purchase Price (₹)"
               type="number"
@@ -445,7 +445,7 @@ export function Inventory() {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Input
               label="Low Stock Threshold"
               type="number"
@@ -454,8 +454,8 @@ export function Inventory() {
               onChange={(e) => setFormData({ ...formData, min_stock_alert: e.target.value })}
             />
             <Input
-              label="Barcode (Optional)"
-              placeholder="Scan or type barcode"
+              label="Barcode / Custom EAN"
+              placeholder="Auto-generated if empty"
               value={formData.barcode}
               onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
             />
@@ -467,9 +467,9 @@ export function Inventory() {
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button type="submit" className="bg-brand-600 hover:bg-brand-500 text-white font-bold">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 pt-4 border-t border-slate-100">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button type="submit" className="bg-brand-600 hover:bg-brand-700 text-white font-bold w-full sm:w-auto">
               {editingProductId ? "Update Product" : "Save New Product"}
             </Button>
           </div>

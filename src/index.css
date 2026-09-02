@@ -3,15 +3,35 @@
 @tailwind utilities;
 
 @layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-slate-50 text-slate-900 font-sans antialiased selection:bg-blue-600 selection:text-white;
+  }
+
+  /* Prevent text size adjustment on mobile orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Ensure media elements don't overflow small screens */
+  img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+    max-width: 100%;
   }
 }
 
 /* Custom Scrollbar for ERP Windows */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -32,4 +52,47 @@
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* =========================================================================
+   RESPONSIVE CSS MEDIA QUERIES
+   ========================================================================= */
+
+/* 1. Mobile Devices (Screen widths <= 767px: iPhone SE 375px, iPhone 14 390px, Galaxy 412px) */
+@media screen and (max-width: 767px) {
+  .erp-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .erp-mobile-full {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .erp-mobile-stack {
+    flex-direction: column !important;
+  }
+
+  /* Optimize modal padding and size on small viewports */
+  .modal-inner-container {
+    padding: 1rem !important;
+    max-width: 95vw !important;
+  }
+}
+
+/* 2. Tablet Devices (Screen widths 768px to 1024px: iPad Mini, iPad Air, Surface) */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .erp-tablet-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* 3. Desktop Devices (Screen widths > 1024px: Laptop, Ultra-wide POS screens) */
+@media screen and (min-width: 1025px) {
+  .erp-desktop-sticky {
+    position: sticky;
+    top: 0;
+  }
 }

@@ -158,47 +158,47 @@ export function SalesHistory() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Page Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Sales Invoice History</h2>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Sales Invoice History</h2>
           <p className="text-xs text-slate-500 mt-1">Review past counter sales, reprint bills, export PDFs, or export Excel/PDF/Word reports</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={fetchSales} icon={RefreshCw}>
-            Refresh Sales
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" onClick={fetchSales} icon={RefreshCw} className="flex-1 sm:flex-initial text-xs">
+            Refresh
           </Button>
           <Button 
             onClick={handleExportExcel} 
             disabled={exportingExcel} 
             icon={FileSpreadsheet} 
-            className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold flex-1 sm:flex-initial text-xs"
           >
-            {exportingExcel ? 'Exporting...' : 'Export Excel'}
+            {exportingExcel ? 'Exporting...' : 'Excel'}
           </Button>
           <Button 
             onClick={handleExportPDF} 
             disabled={exportingPDF} 
             icon={FileText} 
-            className="bg-brand-600 hover:bg-brand-700 text-white font-bold"
+            className="bg-brand-600 hover:bg-brand-700 text-white font-bold flex-1 sm:flex-initial text-xs"
           >
-            {exportingPDF ? 'Exporting...' : 'Export PDF'}
+            {exportingPDF ? 'Exporting...' : 'PDF'}
           </Button>
           <Button 
             onClick={handleExportWord} 
             disabled={exportingWord} 
             icon={FileText} 
-            className="bg-indigo-700 hover:bg-indigo-800 text-white font-bold"
+            className="bg-indigo-700 hover:bg-indigo-800 text-white font-bold flex-1 sm:flex-initial text-xs"
           >
-            {exportingWord ? 'Exporting...' : 'Export Word'}
+            {exportingWord ? 'Exporting...' : 'Word'}
           </Button>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <Card className="p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+      <Card className="p-3.5 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
           <Input
-            placeholder="Search by Invoice No or Customer Name..."
+            placeholder="Search by Invoice No or Customer..."
             icon={Search}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -234,8 +234,8 @@ export function SalesHistory() {
 
       {/* Sales Table */}
       <Card>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left border-collapse min-w-[640px]">
             <thead>
               <tr className="text-xs font-bold text-slate-500 uppercase border-b border-slate-200 bg-slate-50/80">
                 <th className="p-4">Invoice No & Date</th>

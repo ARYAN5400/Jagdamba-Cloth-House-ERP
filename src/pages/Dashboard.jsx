@@ -60,19 +60,19 @@ export function Dashboard() {
   }, []);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-4 sm:space-y-6 max-w-7xl mx-auto w-full">
       {/* Top Welcome Banner & Quick Actions */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-brand-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl border border-slate-800">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-brand-950 to-slate-900 rounded-2xl p-4 sm:p-6 text-white shadow-xl border border-slate-800">
         <div>
-          <h2 className="text-2xl font-black tracking-tight">Jagdamba Unstitched Clothing ERP</h2>
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight">Jagdamba Unstitched Clothing ERP</h2>
           <p className="text-slate-300 text-xs mt-1">
-            Realtime Local SQLite Engine • 100% Offline Retail ERP
+            Realtime Local SQLite Engine • Multi-Device Retail ERP
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button
             onClick={() => navigate('/pos')}
-            className="bg-brand-500 hover:bg-brand-400 text-white font-bold shadow-lg text-xs"
+            className="bg-brand-500 hover:bg-brand-400 text-white font-bold shadow-lg text-xs flex-1 sm:flex-initial"
             icon={Plus}
           >
             New Sale (POS)
@@ -80,7 +80,7 @@ export function Dashboard() {
           <Button
             onClick={() => navigate('/inventory')}
             variant="outline"
-            className="border-slate-700 text-white hover:bg-slate-800 text-xs"
+            className="border-slate-700 text-white hover:bg-slate-800 text-xs flex-1 sm:flex-initial"
             icon={Package}
           >
             + Product
@@ -88,7 +88,7 @@ export function Dashboard() {
           <Button
             onClick={() => navigate('/purchases')}
             variant="outline"
-            className="border-slate-700 text-white hover:bg-slate-800 text-xs"
+            className="border-slate-700 text-white hover:bg-slate-800 text-xs flex-1 sm:flex-initial"
             icon={Truck}
           >
             + Purchase
@@ -96,7 +96,7 @@ export function Dashboard() {
           <Button
             onClick={() => navigate('/expenses')}
             variant="outline"
-            className="border-slate-700 text-white hover:bg-slate-800 text-xs"
+            className="border-slate-700 text-white hover:bg-slate-800 text-xs flex-1 sm:flex-initial"
             icon={Receipt}
           >
             + Expense
@@ -105,7 +105,7 @@ export function Dashboard() {
       </div>
 
       {/* Primary Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="Today's Sales Collection"
           value={`₹${parseFloat(summary.todaySales || 0).toLocaleString('en-IN')}`}
@@ -137,11 +137,11 @@ export function Dashboard() {
       </div>
 
       {/* Cash / UPI Collection & Profit Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-card flex items-center justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-card flex items-center justify-between">
           <div>
             <span className="text-xs font-semibold text-slate-500">Cash Collection Today</span>
-            <div className="text-xl font-extrabold text-slate-900 font-mono mt-0.5">
+            <div className="text-lg sm:text-xl font-extrabold text-slate-900 font-mono mt-0.5">
               ₹{parseFloat(summary.cashCollection || 0).toLocaleString('en-IN')}
             </div>
           </div>
@@ -150,10 +150,10 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-card flex items-center justify-between">
+        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-card flex items-center justify-between">
           <div>
             <span className="text-xs font-semibold text-slate-500">UPI / QR Collection Today</span>
-            <div className="text-xl font-extrabold text-brand-600 font-mono mt-0.5">
+            <div className="text-lg sm:text-xl font-extrabold text-brand-600 font-mono mt-0.5">
               ₹{parseFloat(summary.upiCollection || 0).toLocaleString('en-IN')}
             </div>
           </div>
@@ -162,10 +162,10 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-card flex items-center justify-between">
+        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-card flex items-center justify-between sm:col-span-2 md:col-span-1">
           <div>
             <span className="text-xs font-semibold text-slate-500">Estimated Net Profit Today</span>
-            <div className={`text-xl font-extrabold font-mono mt-0.5 ${summary.todayProfit >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+            <div className={`text-lg sm:text-xl font-extrabold font-mono mt-0.5 ${summary.todayProfit >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
               ₹{parseFloat(summary.todayProfit || 0).toLocaleString('en-IN')}
             </div>
           </div>
@@ -176,7 +176,7 @@ export function Dashboard() {
       </div>
 
       {/* Low Stock Alerts & Recent Transactions Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Recent Sales Bills */}
         <Card
           className="lg:col-span-2"
@@ -191,8 +191,8 @@ export function Dashboard() {
           {summary.recentSales.length === 0 ? (
             <div className="text-center py-12 text-slate-400 text-sm">No sales invoices recorded yet.</div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto w-full">
+              <table className="w-full text-left border-collapse min-w-[480px]">
                 <thead>
                   <tr className="text-xs font-bold text-slate-500 uppercase border-b border-slate-100">
                     <th className="pb-3">Invoice No</th>
@@ -205,10 +205,10 @@ export function Dashboard() {
                 <tbody className="divide-y divide-slate-100 text-sm">
                   {summary.recentSales.map((sale) => (
                     <tr key={sale.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-3 font-bold text-brand-600">{sale.invoice_no}</td>
-                      <td className="py-3 text-slate-800 font-semibold">{sale.customer_name || 'Walk-in Customer'}</td>
+                      <td className="py-3 font-bold text-brand-600 text-xs sm:text-sm">{sale.invoice_no}</td>
+                      <td className="py-3 text-slate-800 font-semibold text-xs sm:text-sm">{sale.customer_name || 'Walk-in Customer'}</td>
                       <td className="py-3 text-slate-600 text-xs font-bold">{sale.payment_mode}</td>
-                      <td className="py-3 text-right font-extrabold text-slate-900">₹{parseFloat(sale.net_amount).toLocaleString('en-IN')}</td>
+                      <td className="py-3 text-right font-extrabold text-slate-900 text-xs sm:text-sm">₹{parseFloat(sale.net_amount).toLocaleString('en-IN')}</td>
                       <td className="py-3 text-center">
                         <Badge variant={sale.payment_status === 'PAID' ? 'success' : 'amber'}>
                           {sale.payment_status}
@@ -229,21 +229,21 @@ export function Dashboard() {
           action={<AlertTriangle className="w-5 h-5 text-amber-500" />}
         >
           {summary.lowStockAlerts.length === 0 ? (
-            <div className="text-center py-12 text-emerald-600 font-bold text-sm flex flex-col items-center gap-2">
+            <div className="text-center py-8 sm:py-12 text-emerald-600 font-bold text-xs sm:text-sm flex flex-col items-center gap-2">
               <CheckCircle2 className="w-8 h-8 text-emerald-500" />
               <span>All inventory stock levels are healthy!</span>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               {summary.lowStockAlerts.map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-3 rounded-xl bg-amber-50/60 border border-amber-200">
-                  <div>
-                    <h4 className="font-bold text-slate-800 text-sm">{item.name}</h4>
-                    <span className="text-xs text-slate-500">Design #{item.design_no} • {item.brand_name || 'Generic'}</span>
+                <div key={item.id} className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-amber-50/60 border border-amber-200">
+                  <div className="min-w-0 pr-2">
+                    <h4 className="font-bold text-slate-800 text-xs sm:text-sm truncate">{item.name}</h4>
+                    <span className="text-[11px] text-slate-500">Design #{item.design_no} • {item.brand_name || 'Generic'}</span>
                   </div>
-                  <div className="text-right">
-                    <span className="font-extrabold text-amber-800 text-sm block">{item.stock_quantity} {item.unit_type}s</span>
-                    <p className="text-[11px] text-amber-600">Threshold: {item.min_stock_alert}</p>
+                  <div className="text-right flex-shrink-0">
+                    <span className="font-extrabold text-amber-800 text-xs sm:text-sm block">{item.stock_quantity} {item.unit_type}s</span>
+                    <p className="text-[10px] sm:text-[11px] text-amber-600">Min: {item.min_stock_alert}</p>
                   </div>
                 </div>
               ))}

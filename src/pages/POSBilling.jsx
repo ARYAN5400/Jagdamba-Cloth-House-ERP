@@ -396,15 +396,15 @@ export function POSBilling() {
   };
 
   return (
-    <div className="h-[calc(100vh-6.5rem)] flex flex-col lg:flex-row gap-5 max-w-[1750px] mx-auto overflow-hidden">
+    <div className="min-h-[calc(100vh-4.5rem)] lg:h-[calc(100vh-6.5rem)] flex flex-col lg:flex-row gap-4 lg:gap-5 w-full max-w-[1750px] mx-auto overflow-visible lg:overflow-hidden pb-8 lg:pb-0">
       
-      {/* LEFT COLUMN: Inline Entry Widgets & Cart Details Form (55% Width) */}
-      <div className="flex-1 flex flex-col gap-3 min-w-0 h-full overflow-y-auto pr-1">
+      {/* LEFT COLUMN: Inline Entry Widgets & Cart Details Form */}
+      <div className="w-full lg:flex-1 flex flex-col gap-3 min-w-0 h-auto lg:h-full lg:overflow-y-auto lg:pr-1">
         
         {/* Top Header Card: Customer Name & Customer Phone Options */}
-        <Card className="p-3.5 bg-white flex-shrink-0 border border-slate-200 shadow-sm">
+        <Card className="p-3 sm:p-3.5 bg-white flex-shrink-0 border border-slate-200 shadow-sm">
           <div className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2 text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-100 pb-2.5 text-xs">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-brand-600 flex-shrink-0" />
                 <h4 className="font-extrabold text-slate-800 uppercase tracking-wide text-xs">
@@ -413,10 +413,9 @@ export function POSBilling() {
               </div>
 
               {/* Saved Customer Dropdown & Quick Add Customer */}
-              <div className="flex items-center gap-2">
-                <span className="text-slate-400 font-semibold hidden sm:inline">Pick Saved:</span>
+              <div className="flex flex-wrap items-center gap-2">
                 <select
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none cursor-pointer"
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none cursor-pointer max-w-full"
                   value={selectedCustomerId}
                   onChange={(e) => {
                     const id = e.target.value;
@@ -438,7 +437,7 @@ export function POSBilling() {
                 <button
                   type="button"
                   onClick={() => setIsCustomerModalOpen(true)}
-                  className="px-2.5 py-1 text-brand-600 hover:bg-brand-50 rounded-xl transition-colors border border-brand-200 font-extrabold flex items-center gap-1 text-xs"
+                  className="px-2.5 py-1.5 text-brand-600 hover:bg-brand-50 rounded-xl transition-colors border border-brand-200 font-extrabold flex items-center gap-1 text-xs"
                   title="Add New Customer Account"
                 >
                   <PlusCircle className="w-3.5 h-3.5" />
@@ -447,13 +446,13 @@ export function POSBilling() {
 
                 {inventoryProducts.length > 0 && (
                   <select
-                    className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-700 focus:bg-white focus:outline-none"
+                    className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-700 focus:bg-white focus:outline-none max-w-full"
                     onChange={handleInventoryPick}
                     value=""
                   >
                     <option value="">Quick Pick ({inventoryProducts.length})...</option>
                     {inventoryProducts.map(p => (
-                      <option key={p.id} value={p.id}>{p.name} • ₹{p.selling_price}</option>
+                      <option key={p.id} value={p.id}>{p.name} • ₹${p.selling_price}</option>
                     ))}
                   </select>
                 )}
@@ -461,7 +460,7 @@ export function POSBilling() {
             </div>
 
             {/* 2 Explicit Options: Customer Name & Customer Mobile/Phone Number */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               <Input
                 label="Customer Name *"
                 placeholder="e.g. Walk-in Customer / Sunita Sharma"
@@ -478,12 +477,12 @@ export function POSBilling() {
           </div>
         </Card>
 
-        {/* CARD 1: INLINE ITEM DETAILS ENTRY WIDGET FORM (NO POPUP MODAL!) */}
-        <Card className="p-4 bg-white border border-brand-200 shadow-card flex-shrink-0 relative overflow-hidden">
-          <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+        {/* CARD 1: INLINE ITEM DETAILS ENTRY WIDGET FORM */}
+        <Card className="p-3.5 sm:p-4 bg-white border border-brand-200 shadow-card flex-shrink-0 relative overflow-hidden">
+          <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-brand-600" />
-              <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wide">
+              <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
                 {editingItemIndex !== null ? "Edit Item Details" : "Item Entry Details Form"}
               </h3>
             </div>
@@ -503,8 +502,7 @@ export function POSBilling() {
               onChange={(e) => setItemForm({ ...itemForm, name: e.target.value })}
             />
 
-
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
               <Input
                 label="Quantity / Length *"
                 type="number"
@@ -516,7 +514,7 @@ export function POSBilling() {
               <div>
                 <label className="text-xs font-semibold text-slate-700">Unit *</label>
                 <select
-                  className="w-full mt-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-800"
+                  className="w-full mt-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-bold text-slate-800"
                   value={itemForm.unit_type}
                   onChange={(e) => setItemForm({ ...itemForm, unit_type: e.target.value })}
                 >
@@ -536,11 +534,11 @@ export function POSBilling() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               <div>
                 <label className="text-xs font-semibold text-slate-700">GST Mode *</label>
                 <select
-                  className="w-full mt-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-800"
+                  className="w-full mt-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-bold text-slate-800"
                   value={itemForm.gst_rate}
                   onChange={(e) => setItemForm({ ...itemForm, gst_rate: e.target.value })}
                 >
@@ -557,11 +555,11 @@ export function POSBilling() {
               />
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-100">
               <button
                 type="button"
                 onClick={clearItemForm}
-                className="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1"
+                className="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1 py-1"
               >
                 <RotateCcw className="w-3.5 h-3.5" /> Clear Form
               </button>
@@ -570,7 +568,7 @@ export function POSBilling() {
                 type="submit"
                 icon={Plus}
                 size="md"
-                className="bg-brand-600 hover:bg-brand-500 text-white font-extrabold px-6 py-2.5 rounded-xl shadow-md text-xs"
+                className="bg-brand-600 hover:bg-brand-500 text-white font-extrabold px-5 sm:px-6 py-2.5 rounded-xl shadow-md text-xs w-full sm:w-auto"
               >
                 {editingItemIndex !== null ? "Update Item on Invoice" : "+ Add Item to Invoice"}
               </Button>
@@ -579,7 +577,7 @@ export function POSBilling() {
         </Card>
 
         {/* CARD 2: ADDED SALES BILL ITEMS TABLE */}
-        <Card className="flex-1 overflow-hidden flex flex-col p-0 border border-slate-200 shadow-card min-h-[200px]">
+        <Card className="flex-1 overflow-hidden flex flex-col p-0 border border-slate-200 shadow-card min-h-[220px]">
           <div className="p-3 bg-slate-900 text-white flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShoppingCart className="w-4 h-4 text-brand-400" />
@@ -590,8 +588,8 @@ export function POSBilling() {
             </span>
           </div>
 
-          <div className="flex-1 overflow-y-auto">
-            <table className="w-full text-left border-collapse text-xs">
+          <div className="flex-1 overflow-x-auto overflow-y-auto w-full">
+            <table className="w-full text-left border-collapse text-xs min-w-[560px]">
               <thead>
                 <tr className="font-bold text-slate-500 uppercase border-b border-slate-200 bg-slate-50">
                   <th className="p-2.5">#</th>
@@ -655,21 +653,21 @@ export function POSBilling() {
         </Card>
 
         {/* CARD 3: BILL TENDER & CHECKOUT ACTION BAR */}
-        <Card className="p-3 bg-slate-900 text-white flex-shrink-0 border border-slate-800 shadow-md">
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-4">
+        <Card className="p-3 sm:p-3.5 bg-slate-900 text-white flex-shrink-0 border border-slate-800 shadow-md">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
+            <div className="flex flex-wrap items-center justify-between sm:justify-start gap-3 sm:gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-slate-400 font-semibold">Bill Discount (₹):</span>
+                <span className="text-slate-400 font-semibold">Discount (₹):</span>
                 <input
                   type="number"
-                  className="w-20 px-2 py-1 text-right font-bold bg-slate-800 border border-slate-700 text-white rounded focus:border-brand-400 focus:outline-none"
+                  className="w-20 px-2 py-1.5 text-right font-bold bg-slate-800 border border-slate-700 text-white rounded focus:border-brand-400 focus:outline-none"
                   value={billDiscount}
                   onChange={(e) => setBillDiscount(e.target.value)}
                 />
               </div>
 
               <div className="text-slate-300">
-                Grand Total: <span className="font-mono font-black text-brand-400 text-base ml-1">₹{grandTotal.toFixed(2)}</span>
+                Total: <span className="font-mono font-black text-brand-400 text-base sm:text-lg ml-1">₹{grandTotal.toFixed(2)}</span>
               </div>
             </div>
 
@@ -677,7 +675,7 @@ export function POSBilling() {
               onClick={() => setIsCheckoutModalOpen(true)}
               disabled={cart.length === 0}
               size="md"
-              className="bg-brand-500 hover:bg-brand-400 text-white font-extrabold px-6 py-2.5 rounded-xl shadow-lg text-xs"
+              className="bg-brand-500 hover:bg-brand-400 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-lg text-xs w-full sm:w-auto"
             >
               Proceed to Checkout (₹{grandTotal.toFixed(2)})
             </Button>
@@ -686,8 +684,8 @@ export function POSBilling() {
 
       </div>
 
-      {/* RIGHT COLUMN: LIVE REAL-TIME INVOICE LAYOUT PREVIEW (45% Width) */}
-      <div className="w-full lg:w-[480px] xl:w-[540px] h-full flex-shrink-0">
+      {/* RIGHT COLUMN: LIVE REAL-TIME INVOICE LAYOUT PREVIEW */}
+      <div className="w-full lg:w-[460px] xl:w-[520px] 2xl:w-[560px] h-auto lg:h-full flex-shrink-0 min-w-0">
         <LiveInvoicePreview
           sale={draftInvoice}
           shopSettings={shopSettings}
@@ -704,17 +702,17 @@ export function POSBilling() {
         title="Complete Sale & Select Payment Mode"
       >
         <div className="space-y-4">
-          <div className="p-4 rounded-xl bg-slate-900 text-white flex justify-between items-center">
+          <div className="p-3.5 sm:p-4 rounded-xl bg-slate-900 text-white flex justify-between items-center">
             <div>
               <span className="text-xs text-slate-400 block">Total Bill Amount</span>
-              <span className="text-2xl font-black text-brand-400 font-mono">₹{grandTotal.toFixed(2)}</span>
+              <span className="text-xl sm:text-2xl font-black text-brand-400 font-mono">₹{grandTotal.toFixed(2)}</span>
             </div>
             <Badge variant="success">Final Invoice</Badge>
           </div>
 
           <div>
             <label className="text-xs font-bold text-slate-700">Payment Mode</label>
-            <div className="grid grid-cols-4 gap-2 mt-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-1.5">
               {['Cash', 'UPI', 'Card', 'Credit'].map((mode) => (
                 <button
                   key={mode}
@@ -740,9 +738,9 @@ export function POSBilling() {
             onChange={(e) => setPaidAmount(e.target.value)}
           />
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
-            <Button variant="outline" onClick={() => setIsCheckoutModalOpen(false)}>Back</Button>
-            <Button onClick={handleCompleteSale} disabled={isSaving} icon={CheckCircle2} className="bg-brand-600 text-white font-bold">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 pt-3 border-t border-slate-100">
+            <Button variant="outline" onClick={() => setIsCheckoutModalOpen(false)} className="w-full sm:w-auto">Back</Button>
+            <Button onClick={handleCompleteSale} disabled={isSaving} icon={CheckCircle2} className="bg-brand-600 text-white font-bold w-full sm:w-auto">
               {isSaving ? "Saving Invoice..." : "Generate Invoice & Save Sale"}
             </Button>
           </div>
@@ -776,9 +774,9 @@ export function POSBilling() {
             onChange={(e) => setCustomerForm({ ...customerForm, address: e.target.value })}
           />
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
-            <Button variant="outline" onClick={() => setIsCustomerModalOpen(false)}>Cancel</Button>
-            <Button type="submit">Save Customer</Button>
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 pt-3 border-t border-slate-100">
+            <Button variant="outline" onClick={() => setIsCustomerModalOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button type="submit" className="w-full sm:w-auto">Save Customer</Button>
           </div>
         </form>
       </Modal>
@@ -790,10 +788,10 @@ export function POSBilling() {
           onClose={() => setLastCompletedInvoice(null)}
           title="Sale Completed Successfully!"
         >
-          <div className="text-center space-y-4 py-3">
-            <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto" />
+          <div className="text-center space-y-4 py-2 sm:py-3">
+            <CheckCircle2 className="w-12 h-12 sm:w-16 sm:h-16 text-emerald-500 mx-auto" />
             <div>
-              <h3 className="text-xl font-black text-slate-900">
+              <h3 className="text-lg sm:text-xl font-black text-slate-900">
                 Invoice #{lastCompletedInvoice.invoice_no}
               </h3>
               <p className="text-xs text-slate-500 mt-1">
@@ -801,14 +799,14 @@ export function POSBilling() {
               </p>
             </div>
 
-            <div className="flex justify-center gap-3 pt-4">
-              <Button onClick={handlePrint} icon={Printer} className="bg-slate-900 text-white font-bold">
+            <div className="flex flex-col sm:flex-row justify-center gap-2.5 pt-3">
+              <Button onClick={handlePrint} icon={Printer} className="bg-slate-900 text-white font-bold w-full sm:w-auto">
                 Print Bill
               </Button>
-              <Button onClick={handleDownloadPDF} icon={FileText} variant="outline" className="font-bold">
+              <Button onClick={handleDownloadPDF} icon={FileText} variant="outline" className="font-bold w-full sm:w-auto">
                 Save as PDF
               </Button>
-              <Button variant="outline" onClick={() => setLastCompletedInvoice(null)}>
+              <Button variant="outline" onClick={() => setLastCompletedInvoice(null)} className="w-full sm:w-auto">
                 New Sale
               </Button>
             </div>

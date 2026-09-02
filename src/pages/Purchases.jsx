@@ -160,33 +160,33 @@ export function Purchases() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Top Action Bar */}
+      {/* Top Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Wholesaler Purchases & Stock In</h2>
-          <p className="text-xs text-slate-500 mt-1">Record supplier purchase bills to automatically increase inventory stock</p>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Wholesaler Purchases & Stock Inward</h2>
+          <p className="text-xs text-slate-500 mt-1">Record supplier purchase bills, wholesale textile shipments & payments</p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" onClick={() => setIsSupplierModalOpen(true)} icon={User}>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" onClick={() => setIsSupplierModalOpen(true)} icon={User} className="flex-1 sm:flex-initial text-xs">
             + Add Supplier
           </Button>
-          <Button onClick={() => setIsPurchaseModalOpen(true)} icon={Plus} className="bg-brand-600 hover:bg-brand-500 text-white font-bold">
+          <Button onClick={() => setIsPurchaseModalOpen(true)} icon={Plus} className="bg-brand-600 hover:bg-brand-500 text-white font-bold flex-1 sm:flex-initial text-xs">
             + New Purchase Bill
           </Button>
         </div>
       </div>
 
       {/* Suppliers Overview Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
         {suppliers.map(s => (
-          <div key={s.id} className="p-4 bg-white rounded-2xl border border-slate-200 shadow-card flex justify-between items-center">
-            <div>
-              <h4 className="font-bold text-slate-900 text-sm">{s.name}</h4>
-              <span className="text-xs text-slate-500">{s.company_name || 'Wholesaler Agent'} • {s.phone || 'No phone'}</span>
+          <div key={s.id} className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200 shadow-card flex justify-between items-center">
+            <div className="min-w-0 pr-2">
+              <h4 className="font-bold text-slate-900 text-xs sm:text-sm truncate">{s.name}</h4>
+              <span className="text-[11px] sm:text-xs text-slate-500 block truncate">{s.company_name || 'Wholesaler'} • {s.phone || 'No phone'}</span>
             </div>
-            <div className="text-right">
-              <span className="text-[11px] text-slate-400 block">Current Balance</span>
-              <span className={`text-sm font-extrabold ${s.current_balance > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+            <div className="text-right flex-shrink-0">
+              <span className="text-[10px] sm:text-[11px] text-slate-400 block">Balance</span>
+              <span className={`text-xs sm:text-sm font-extrabold ${s.current_balance > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
                 ₹{s.current_balance || 0}
               </span>
             </div>
@@ -196,16 +196,16 @@ export function Purchases() {
 
       {/* Purchase Invoices Table */}
       <Card title="Recorded Purchase Bills">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left border-collapse min-w-[560px]">
             <thead>
               <tr className="text-xs font-bold text-slate-500 uppercase border-b border-slate-200 bg-slate-50/80">
-                <th className="p-4">Invoice No</th>
-                <th className="p-4">Purchase Date</th>
-                <th className="p-4">Supplier</th>
-                <th className="p-4 text-right">Tax Amount</th>
-                <th className="p-4 text-right">Grand Total</th>
-                <th className="p-4 text-center">Payment Status</th>
+                <th className="p-3 sm:p-4">Invoice No</th>
+                <th className="p-3 sm:p-4">Purchase Date</th>
+                <th className="p-3 sm:p-4">Supplier</th>
+                <th className="p-3 sm:p-4 text-right">Tax Amount</th>
+                <th className="p-3 sm:p-4 text-right">Grand Total</th>
+                <th className="p-3 sm:p-4 text-center">Payment Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
@@ -218,12 +218,12 @@ export function Purchases() {
               ) : (
                 purchases.map(p => (
                   <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-4 font-bold text-brand-600">{p.invoice_no}</td>
-                    <td className="p-4 text-xs text-slate-500">{p.purchase_date}</td>
-                    <td className="p-4 font-semibold text-slate-800">{p.supplier_name || 'Generic Supplier'}</td>
-                    <td className="p-4 text-right font-mono text-slate-600">₹{parseFloat(p.tax_amount || 0).toFixed(2)}</td>
-                    <td className="p-4 text-right font-extrabold text-slate-900">₹{parseFloat(p.net_amount || 0).toFixed(2)}</td>
-                    <td className="p-4 text-center">
+                    <td className="p-3 sm:p-4 font-bold text-brand-600 text-xs sm:text-sm">{p.invoice_no}</td>
+                    <td className="p-3 sm:p-4 text-xs text-slate-500">{p.purchase_date}</td>
+                    <td className="p-3 sm:p-4 font-semibold text-slate-800 text-xs sm:text-sm">{p.supplier_name || 'Generic Supplier'}</td>
+                    <td className="p-3 sm:p-4 text-right font-mono text-slate-600 text-xs sm:text-sm">₹{parseFloat(p.tax_amount || 0).toFixed(2)}</td>
+                    <td className="p-3 sm:p-4 text-right font-extrabold text-slate-900 text-xs sm:text-sm">₹{parseFloat(p.net_amount || 0).toFixed(2)}</td>
+                    <td className="p-3 sm:p-4 text-center">
                       <Badge variant={p.payment_status === 'PAID' ? 'success' : 'amber'}>
                         {p.payment_status} ({p.payment_mode})
                       </Badge>
@@ -239,11 +239,11 @@ export function Purchases() {
       {/* New Purchase Modal */}
       <Modal isOpen={isPurchaseModalOpen} onClose={() => setIsPurchaseModalOpen(false)} title="Record Wholesaler Purchase Invoice">
         <form onSubmit={handleSavePurchase} className="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="text-xs font-semibold text-slate-700">Supplier *</label>
               <select
-                className="w-full mt-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium"
+                className="w-full mt-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium"
                 value={supplierId}
                 onChange={(e) => setSupplierId(e.target.value)}
               >
@@ -275,8 +275,8 @@ export function Purchases() {
               <Plus className="w-3.5 h-3.5 text-brand-600" /> Add Product Item to Purchase Bill
             </h5>
 
-            <div className="grid grid-cols-4 gap-2">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="sm:col-span-2">
                 <select
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-800"
                   value={selectedProductId}
@@ -312,8 +312,8 @@ export function Purchases() {
           </div>
 
           {/* Purchase Items List */}
-          <div className="border border-slate-200 rounded-xl overflow-hidden">
-            <table className="w-full text-left border-collapse text-xs">
+          <div className="border border-slate-200 rounded-xl overflow-x-auto w-full">
+            <table className="w-full text-left border-collapse text-xs min-w-[480px]">
               <thead className="bg-slate-100 font-bold text-slate-600 border-b">
                 <tr>
                   <th className="p-2.5">Product & Design</th>
@@ -349,12 +349,12 @@ export function Purchases() {
 
           {/* Bill Totals & Payment */}
           <div className="p-4 rounded-xl bg-slate-900 text-white space-y-3">
-            <div className="flex justify-between text-sm font-bold">
-              <span>Grand Total Payable</span>
-              <span className="text-brand-400 font-mono text-xl">₹{grandTotal.toFixed(2)}</span>
+            <div className="flex justify-between text-sm font-bold items-center">
+              <span className="text-slate-400 text-xs">Grand Total Payable</span>
+              <span className="text-brand-400 font-mono text-xl font-extrabold">₹{grandTotal.toFixed(2)}</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800">
               <div>
                 <label className="text-xs text-slate-400">Payment Mode</label>
                 <select
@@ -382,9 +382,9 @@ export function Purchases() {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
-            <Button variant="outline" onClick={() => setIsPurchaseModalOpen(false)}>Cancel</Button>
-            <Button type="submit" icon={CheckCircle2} className="bg-brand-600 text-white font-bold">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 pt-3 border-t border-slate-100">
+            <Button variant="outline" onClick={() => setIsPurchaseModalOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button type="submit" icon={CheckCircle2} className="bg-brand-600 text-white font-bold w-full sm:w-auto">
               Save Purchase & Increase Stock
             </Button>
           </div>

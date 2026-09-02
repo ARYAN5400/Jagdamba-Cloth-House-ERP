@@ -76,17 +76,17 @@ export function LiveInvoicePreview({ sale, shopSettings, typingItem, onPrint, on
   const wordsStr = numberToWords(grandTotal);
 
   return (
-    <div className="bg-slate-100/70 rounded-xl p-3 border border-slate-300 flex flex-col h-full overflow-hidden font-sans select-none">
+    <div className="bg-slate-100/70 rounded-xl p-2.5 sm:p-3 border border-slate-300 flex flex-col h-full overflow-hidden font-sans select-none w-full max-w-full">
       {/* Header bar */}
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-300">
-        <div className="flex items-center gap-2">
-          <Eye className="w-4 h-4 text-slate-700" />
-          <h4 className="font-bold text-xs text-slate-800 uppercase tracking-wider">
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-300 gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <Eye className="w-4 h-4 text-slate-700 flex-shrink-0" />
+          <h4 className="font-bold text-xs text-slate-800 uppercase tracking-wider truncate">
             POS Invoice Preview
           </h4>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           {onPrint && (
             <button
               onClick={onPrint}
@@ -109,47 +109,47 @@ export function LiveInvoicePreview({ sale, shopSettings, typingItem, onPrint, on
       </div>
 
       {/* Printable Invoice Sheet Container */}
-      <div className="flex-1 overflow-y-auto pr-1">
-        <div className="bg-white text-slate-900 p-5 rounded-sm border border-slate-300 max-w-[800px] mx-auto text-xs font-sans leading-relaxed">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-0.5 w-full">
+        <div className="bg-white text-slate-900 p-3 sm:p-5 rounded-sm border border-slate-300 w-full max-w-[800px] mx-auto text-xs font-sans leading-relaxed">
           
           {/* 1. Header Section */}
-          <div className="border border-slate-300 p-3.5 mb-3">
-            <div className="flex justify-between items-start">
+          <div className="border border-slate-300 p-2.5 sm:p-3.5 mb-3">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-2.5">
               {/* Shop Details Left */}
-              <div>
-                <div className="text-[10px] font-bold tracking-widest text-slate-600 uppercase mb-0.5">
+              <div className="min-w-0">
+                <div className="text-[9px] sm:text-[10px] font-bold tracking-widest text-slate-600 uppercase mb-0.5">
                   RETAIL TAX INVOICE
                 </div>
-                <h1 className="text-lg font-bold text-slate-900 uppercase tracking-tight leading-tight">
+                <h1 className="text-base sm:text-lg font-bold text-slate-900 uppercase tracking-tight leading-tight">
                   {shopName}
                 </h1>
-                <p className="text-slate-700 text-[11px] font-medium mt-0.5">{shopAddress}</p>
-                <div className="text-[11px] text-slate-700 mt-1 space-x-2">
+                <p className="text-slate-700 text-[10px] sm:text-[11px] font-medium mt-0.5">{shopAddress}</p>
+                <div className="text-[10px] sm:text-[11px] text-slate-700 mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
                   <span><strong>GSTIN:</strong> {gstin}</span>
-                  <span className="text-slate-400">|</span>
+                  <span className="text-slate-400 hidden sm:inline">|</span>
                   <span><strong>Mob.:</strong> {phone}</span>
                 </div>
               </div>
 
               {/* Invoice Meta Right */}
-              <div className="text-right border-l border-slate-300 pl-4">
-                <table className="text-[11px] text-left border-collapse">
+              <div className="text-left sm:text-right border-t sm:border-t-0 sm:border-l border-slate-300 pt-2 sm:pt-0 sm:pl-4 w-full sm:w-auto">
+                <table className="text-[10px] sm:text-[11px] text-left border-collapse w-full sm:w-auto">
                   <tbody>
                     <tr>
                       <td className="pr-3 text-slate-600 font-medium py-0.5">Invoice No.:</td>
-                      <td className="font-bold text-slate-900 py-0.5">{invoiceNo}</td>
+                      <td className="font-bold text-slate-900 py-0.5 text-right sm:text-left">{invoiceNo}</td>
                     </tr>
                     <tr>
                       <td className="pr-3 text-slate-600 font-medium py-0.5">Date:</td>
-                      <td className="font-semibold text-slate-900 py-0.5">{dateStr}</td>
+                      <td className="font-semibold text-slate-900 py-0.5 text-right sm:text-left">{dateStr}</td>
                     </tr>
                     <tr>
                       <td className="pr-3 text-slate-600 font-medium py-0.5">Time:</td>
-                      <td className="font-semibold text-slate-900 py-0.5">{timeStr}</td>
+                      <td className="font-semibold text-slate-900 py-0.5 text-right sm:text-left">{timeStr}</td>
                     </tr>
                     <tr>
                       <td className="pr-3 text-slate-600 font-medium py-0.5">State Code:</td>
-                      <td className="font-semibold text-slate-900 py-0.5">{stateCode}</td>
+                      <td className="font-semibold text-slate-900 py-0.5 text-right sm:text-left">{stateCode}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -158,25 +158,25 @@ export function LiveInvoicePreview({ sale, shopSettings, typingItem, onPrint, on
           </div>
 
           {/* 2. Customer Information Grid (BILLED TO) */}
-          <div className="border border-slate-300 p-3 mb-3 bg-slate-50/50">
-            <div className="text-[10px] font-bold uppercase text-slate-600 tracking-wider mb-1.5 pb-1 border-b border-slate-200">
+          <div className="border border-slate-300 p-2.5 sm:p-3 mb-3 bg-slate-50/50">
+            <div className="text-[9px] sm:text-[10px] font-bold uppercase text-slate-600 tracking-wider mb-1.5 pb-1 border-b border-slate-200">
               Billed To (Customer Details)
             </div>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-[10px] sm:text-[11px]">
               <div className="flex">
-                <span className="text-slate-600 w-28 flex-shrink-0">Customer Name:</span>
-                <span className="font-bold text-slate-900">{customerNameStr}</span>
+                <span className="text-slate-600 w-24 sm:w-28 flex-shrink-0">Customer Name:</span>
+                <span className="font-bold text-slate-900 truncate">{customerNameStr}</span>
               </div>
               <div className="flex">
-                <span className="text-slate-600 w-28 flex-shrink-0">Payment Mode:</span>
+                <span className="text-slate-600 w-24 sm:w-28 flex-shrink-0">Payment Mode:</span>
                 <span className="font-bold text-slate-900 uppercase">{sale?.payment_mode || 'Cash'}</span>
               </div>
               <div className="flex">
-                <span className="text-slate-600 w-28 flex-shrink-0">Mobile Number:</span>
+                <span className="text-slate-600 w-24 sm:w-28 flex-shrink-0">Mobile Number:</span>
                 <span className="font-bold text-slate-900">{customerPhoneStr || 'N/A'}</span>
               </div>
               <div className="flex">
-                <span className="text-slate-600 w-28 flex-shrink-0">Customer GSTIN:</span>
+                <span className="text-slate-600 w-24 sm:w-28 flex-shrink-0">Customer GSTIN:</span>
                 <span className="font-bold text-slate-900">{customerGstinStr}</span>
               </div>
             </div>
@@ -184,25 +184,25 @@ export function LiveInvoicePreview({ sale, shopSettings, typingItem, onPrint, on
 
           {/* 3. Items Table / Empty Cart State */}
           {items.length === 0 ? (
-            <div className="border border-slate-300 py-5 px-4 text-center bg-slate-50/40 mb-3 rounded-sm">
+            <div className="border border-slate-300 py-4 px-3 text-center bg-slate-50/40 mb-3 rounded-sm">
               <div className="flex items-center justify-center gap-2 text-slate-700 mb-1">
                 <ShoppingBag className="w-4 h-4 text-slate-600" />
                 <span className="font-semibold text-xs text-slate-800">POS Cart is Empty</span>
               </div>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[10px] sm:text-[11px] text-slate-500">
                 Add items to POS cart to preview invoice details.
               </p>
             </div>
           ) : (
-            <div className="border border-slate-300 mb-3 overflow-hidden">
-              <table className="w-full text-left border-collapse text-[11px]">
+            <div className="border border-slate-300 mb-3 overflow-x-auto w-full">
+              <table className="w-full text-left border-collapse text-[10px] sm:text-[11px] min-w-[380px]">
                 <thead>
-                  <tr className="bg-slate-100 text-slate-900 font-bold text-[10px] uppercase tracking-wide border-b border-slate-300">
-                    <th className="py-2 px-2.5 w-12 text-center border-r border-slate-300 font-bold text-slate-900">S.NO.</th>
-                    <th className="py-2 px-2.5 w-14 text-center border-r border-slate-300 font-bold text-slate-900">QTY</th>
-                    <th className="py-2 px-3 text-left border-r border-slate-300 font-bold text-slate-900">PARTICULARS / ITEM DESCRIPTION</th>
-                    <th className="py-2 px-3 w-24 text-right border-r border-slate-300 font-bold text-slate-900">RATE (Rs.)</th>
-                    <th className="py-2 px-3 w-28 text-right font-bold text-slate-900">AMOUNT (Rs.)</th>
+                  <tr className="bg-slate-100 text-slate-900 font-bold text-[9px] sm:text-[10px] uppercase tracking-wide border-b border-slate-300">
+                    <th className="py-1.5 px-2 w-10 text-center border-r border-slate-300 font-bold text-slate-900">S.NO.</th>
+                    <th className="py-1.5 px-2 w-12 text-center border-r border-slate-300 font-bold text-slate-900">QTY</th>
+                    <th className="py-1.5 px-2 text-left border-r border-slate-300 font-bold text-slate-900">ITEM DESCRIPTION</th>
+                    <th className="py-1.5 px-2 w-20 text-right border-r border-slate-300 font-bold text-slate-900">RATE</th>
+                    <th className="py-1.5 px-2 w-20 text-right font-bold text-slate-900">AMOUNT</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
@@ -218,29 +218,28 @@ export function LiveInvoicePreview({ sale, shopSettings, typingItem, onPrint, on
                     return (
                       <tr 
                         key={idx} 
-                        className={isDraftTyping ? 'bg-slate-100 font-medium' : 'hover:bg-slate-50/60'}
+                        className={`hover:bg-slate-50/50 transition-colors ${isDraftTyping ? 'bg-amber-50/60 font-semibold italic text-slate-700' : ''}`}
                       >
-                        <td className="py-2 px-2.5 text-center text-slate-600 border-r border-slate-200">{idx + 1}</td>
-                        <td className="py-2 px-2.5 text-center font-medium text-slate-900 border-r border-slate-200">{qtyDisplay}</td>
-                        <td className="py-2 px-3 text-slate-900 border-r border-slate-200">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-semibold">{particulars}</span>
+                        <td className="py-1.5 px-2 text-center border-r border-slate-200 text-slate-600 font-medium">
+                          {idx + 1}
+                        </td>
+                        <td className="py-1.5 px-2 text-center border-r border-slate-200 font-bold text-slate-900">
+                          {qtyDisplay}
+                        </td>
+                        <td className="py-1.5 px-2 border-r border-slate-200 font-medium text-slate-900">
+                          <div>
+                            {particulars}
                             {item.design_no && (
-                              <span className="text-[10px] text-slate-500 font-normal">
-                                (Des: #{item.design_no})
-                              </span>
-                            )}
-                            {isDraftTyping && (
-                              <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
-                                (Typing...)
+                              <span className="text-[10px] text-slate-500 font-normal ml-1">
+                                (#{item.design_no})
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="py-2 px-3 text-right text-slate-800 border-r border-slate-200 font-mono">
+                        <td className="py-1.5 px-2 text-right border-r border-slate-200 font-mono text-slate-700">
                           ₹{rate.toFixed(2)}
                         </td>
-                        <td className="py-2 px-3 text-right font-semibold text-slate-900 font-mono">
+                        <td className="py-1.5 px-2 text-right font-mono font-bold text-slate-900">
                           ₹{itemSub.toFixed(2)}
                         </td>
                       </tr>
@@ -251,86 +250,88 @@ export function LiveInvoicePreview({ sale, shopSettings, typingItem, onPrint, on
             </div>
           )}
 
-          {/* 4. Totals & Payment Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-            {/* Left Side: Amount in Words & Payment status */}
-            <div className="space-y-2">
+          {/* 4. Bottom Grid: Totals & Paid Information */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mb-3">
+            <div className="flex flex-col gap-2">
+              {/* Amount in Words */}
               <div className="border border-slate-300 p-2.5 bg-slate-50/30">
-                <span className="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Amount in Words</span>
-                <p className="font-semibold italic text-slate-900 text-[11px] leading-snug">
+                <span className="text-[9px] sm:text-[10px] font-bold uppercase text-slate-600 tracking-wider block mb-0.5">
+                  Amount in Words
+                </span>
+                <p className="font-semibold text-slate-900 text-[10px] sm:text-[11px] italic leading-tight">
                   {wordsStr}
                 </p>
               </div>
 
-              <div className="border border-slate-300 p-2.5 text-[11px] space-y-1">
-                <div className="flex justify-between">
+              {/* Paid / Due Balance */}
+              <div className="border border-slate-300 p-2.5">
+                <div className="flex justify-between items-center text-[10px] sm:text-[11px] mb-1">
                   <span className="text-slate-600">Paid Amount:</span>
                   <span className="font-bold text-slate-900 font-mono">₹{paidAmount.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between border-t border-slate-200 pt-1">
+                <div className="flex justify-between items-center text-[10px] sm:text-[11px] border-t border-slate-200 pt-1">
                   <span className="text-slate-600">Balance Due:</span>
                   <span className="font-bold text-slate-900 font-mono">₹{balanceDue.toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Side: Clean Right-Aligned Totals Block */}
-            <div className="border border-slate-300 text-[11px]">
-              <div className="flex justify-between px-3 py-1.5 border-b border-slate-200">
-                <span className="text-slate-600">Subtotal</span>
-                <span className="font-semibold text-slate-900 font-mono">₹{subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between px-3 py-1.5 border-b border-slate-200">
-                <span className="text-slate-600">Discount</span>
-                <span className="font-semibold text-slate-900 font-mono">-₹{totalDiscount.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between px-3 py-1.5 border-b border-slate-200">
-                <span className="text-slate-600">CGST @ {cgstRateStr}</span>
-                <span className="font-semibold text-slate-900 font-mono">₹{cgstVal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between px-3 py-1.5 border-b border-slate-200">
-                <span className="text-slate-600">SGST @ {sgstRateStr}</span>
-                <span className="font-semibold text-slate-900 font-mono">₹{sgstVal.toFixed(2)}</span>
-              </div>
-              {/* Subtle Clean Highlighted GRAND TOTAL */}
-              <div className="flex justify-between px-3 py-2 bg-slate-100 border-t-2 border-slate-900 font-bold text-slate-900 text-xs">
-                <span>GRAND TOTAL</span>
-                <span className="font-mono text-xs">₹{grandTotal.toFixed(2)}</span>
+            {/* Calculations & GST breakdown */}
+            <div className="border border-slate-300 overflow-hidden">
+              <div className="divide-y divide-slate-200 text-[10px] sm:text-[11px]">
+                <div className="flex justify-between py-1.5 px-2.5">
+                  <span className="text-slate-600">Subtotal:</span>
+                  <span className="font-mono text-slate-800">₹{subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between py-1.5 px-2.5">
+                  <span className="text-slate-600">Discount:</span>
+                  <span className="font-mono text-slate-800">-₹{totalDiscount.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between py-1.5 px-2.5">
+                  <span className="text-slate-600">CGST @ {cgstRateStr}:</span>
+                  <span className="font-mono text-slate-800">₹{cgstVal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between py-1.5 px-2.5">
+                  <span className="text-slate-600">SGST @ {sgstRateStr}:</span>
+                  <span className="font-mono text-slate-800">₹{sgstVal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between py-2 px-2.5 bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-900">
+                  <span className="uppercase text-[10px] sm:text-xs">Grand Total:</span>
+                  <span className="font-mono text-xs sm:text-sm">₹{grandTotal.toFixed(2)}</span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 5. Terms & Conditions and Signature Section */}
-          <div className="border border-slate-300 p-3 grid grid-cols-2 gap-4 text-[10px]">
+          <div className="border border-slate-300 p-2.5 sm:p-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-[9px] sm:text-[10px]">
             <div>
-              <span className="font-bold text-slate-900 uppercase block mb-1">Terms & Conditions</span>
-              <ul className="text-slate-600 space-y-0.5 list-disc list-inside">
+              <strong className="text-slate-900 uppercase tracking-wide block mb-1">Terms & Conditions</strong>
+              <ul className="list-decimal pl-3 space-y-0.5 text-slate-600 leading-tight">
                 <li>Goods once sold will not be taken back.</li>
                 <li>2% p.m. interest will be charged after 15 days.</li>
                 <li>Fixed price, no exchange, no return.</li>
               </ul>
             </div>
 
-            <div className="text-center flex flex-col justify-between items-center pl-3 border-l border-slate-300">
-              <span className="font-bold text-slate-900 text-[10px]">For Jagdamba Cloth House</span>
+            <div className="flex flex-col justify-between items-center sm:items-end border-t sm:border-t-0 sm:border-l border-slate-200 pt-2 sm:pt-0 sm:pl-3 text-center sm:text-right">
+              <span className="font-bold text-slate-900">For Jagdamba Cloth House</span>
               {signaturePng ? (
-                <img src={signaturePng} alt="Authorized Signature" className="h-8 object-contain my-0.5" />
+                <img src={signaturePng} alt="Signature" className="max-h-7 sm:max-h-9 object-contain my-1" />
               ) : (
-                <div className="h-8"></div>
+                <div className="h-6 sm:h-8"></div>
               )}
-              <span className="border-t border-slate-400 w-3/4 pt-0.5 font-semibold text-slate-700">
-                Authorized Signatory
-              </span>
+              <span className="text-slate-500 font-medium border-t border-slate-300 pt-0.5 w-32 text-center text-[9px] sm:text-[10px]">Authorized Signatory</span>
             </div>
           </div>
 
-          {/* Thank You Note */}
-          <div className="text-center mt-2.5 text-slate-600 text-[10px] font-medium">
+          {/* 6. Footer Thank You Note */}
+          <div className="text-center mt-2.5 text-slate-500 text-[9px] sm:text-[10px] font-medium">
             Thank you for shopping with Jagdamba Cloth House!
           </div>
+
         </div>
       </div>
     </div>
   );
 }
-

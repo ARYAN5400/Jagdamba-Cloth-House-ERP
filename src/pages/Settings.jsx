@@ -62,7 +62,7 @@ export function Settings() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div>
-        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Store Settings & Configuration</h2>
+        <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Store Settings & Configuration</h2>
         <p className="text-xs text-slate-500 mt-1">Configure shop header details, GSTIN, invoice prefixes, and financial year</p>
       </div>
 
@@ -105,7 +105,7 @@ export function Settings() {
 
         {/* GST & Financial Settings */}
         <Card title="GSTIN, Invoice & Financial Year Settings">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <Input
               label="Shop GSTIN (Optional)"
               placeholder="03BMLPK3243D1ZH"
@@ -154,7 +154,7 @@ export function Settings() {
 
         {/* Bank & Invoice Footers */}
         <Card title="Bank Account Details (For Invoices)">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <Input
               label="Bank Name"
               value={formData.bank_name || ''}
@@ -180,8 +180,8 @@ export function Settings() {
               Upload the shop owner's authorized signature image. Every future invoice (Preview, Print, PDF, Word) will automatically include this signature above "Authorized Signatory".
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center gap-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <div className="w-48 h-24 bg-white border border-slate-300 rounded-lg p-2 flex flex-col items-center justify-center relative overflow-hidden shadow-inner">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div className="w-48 h-24 bg-white border border-slate-300 rounded-lg p-2 flex flex-col items-center justify-center relative overflow-hidden shadow-inner flex-shrink-0">
                 <span className="text-[10px] font-bold text-slate-400 mb-1">Pre-printed Signature Preview</span>
                 <img 
                   src={getShopSignatureImage(formData)} 
@@ -233,7 +233,7 @@ export function Settings() {
         </Card>
 
         <div className="flex justify-end">
-          <Button type="submit" size="lg" icon={Save} className="bg-brand-600 hover:bg-brand-500 text-white font-bold px-8">
+          <Button type="submit" size="lg" icon={Save} className="bg-brand-600 hover:bg-brand-500 text-white font-bold px-8 w-full sm:w-auto">
             Save Store Settings
           </Button>
         </div>

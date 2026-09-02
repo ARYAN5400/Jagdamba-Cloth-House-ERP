@@ -224,23 +224,23 @@ export function Reports() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">CA Reports & Business Intelligence</h2>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">CA Reports & Business Intelligence</h2>
           <p className="text-xs text-slate-500 mt-1">Export formatted Excel spreadsheets and PDF audit statements for your Chartered Accountant</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button onClick={exportExcel} icon={FileSpreadsheet} className="bg-emerald-600 hover:bg-emerald-700 font-bold text-white">
-            Export Excel for CA (.xlsx)
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Button onClick={exportExcel} icon={FileSpreadsheet} className="bg-emerald-600 hover:bg-emerald-700 font-bold text-white flex-1 sm:flex-initial text-xs">
+            Export Excel (.xlsx)
           </Button>
-          <Button onClick={exportPDF} icon={FileText} variant="outline" className="font-bold">
-            Export PDF Statement
+          <Button onClick={exportPDF} icon={FileText} variant="outline" className="font-bold flex-1 sm:flex-initial text-xs">
+            Export PDF
           </Button>
         </div>
       </div>
 
       {/* Filter Control Bar */}
-      <Card className="p-4 space-y-3">
+      <Card className="p-3.5 sm:p-4 space-y-3">
         <div className="flex flex-wrap items-center gap-2 pb-2 border-b border-slate-100">
           <span className="text-xs font-bold text-slate-700 mr-2">Report Module:</span>
           {[
@@ -263,7 +263,7 @@ export function Reports() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
           <div>
             <label className="text-[11px] font-bold text-slate-500">Quick Date Presets</label>
             <select
@@ -296,7 +296,7 @@ export function Reports() {
           />
 
           <div className="flex items-end">
-            <Button onClick={fetchReport} icon={RefreshCw} className="w-full">
+            <Button onClick={fetchReport} icon={RefreshCw} className="w-full text-xs">
               Generate Report
             </Button>
           </div>
@@ -305,8 +305,8 @@ export function Reports() {
 
       {/* Report Table Preview */}
       <Card title={`${reportType.toUpperCase()} Report Preview (${fromDate} to ${toDate})`}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left border-collapse min-w-[640px]">
             <thead>
               <tr className="text-xs font-bold text-slate-500 uppercase border-b border-slate-200 bg-slate-50/80">
                 {reportType === 'sales' && (

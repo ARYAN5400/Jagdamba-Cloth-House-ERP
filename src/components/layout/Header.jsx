@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Minus, Square, X, Wifi, WifiOff, Building2, Calendar, Clock, Globe } from 'lucide-react';
+import { Menu, X, Minus, Square, Wifi, WifiOff, Building2, Calendar, Clock, Globe } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 export function Header() {
-  const { shopSettings, isDbConnected } = useApp();
+  const { shopSettings, isDbConnected, isMobileSidebarOpen, toggleMobileSidebar } = useApp();
   const [time, setTime] = useState(new Date());
   const isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
 
@@ -17,44 +17,60 @@ export function Header() {
   const handleClose = () => window.electronAPI?.close();
 
   return (
-    <header className="h-14 bg-white border-b border-slate-200/80 px-6 flex items-center justify-between select-none flex-shrink-0">
-      {/* Shop Info & Mode Status */}
-      <div className="flex items-center gap-3 md:gap-4 flex-wrap">
-        <div className="flex items-center gap-2 text-slate-800 font-semibold text-sm">
-          <Building2 className="w-4 h-4 text-brand-600" />
-          <span className="truncate max-w-[200px] md:max-w-none">{shopSettings.shop_name || 'Jagdamba Cloth House'}</span>
+    <header className="h-14 bg-white border-b border-slate-200/80 px-3 sm:px-6 flex items-center justify-between select-none flex-shrink-0 w-full z-30">
+      {/* Left: Hamburger Button (Mobile) + Shop Brand & Badges */}
+      <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+        {/* Mobile Hamburger Toggle */}
+        <button
+          type="button"
+          onClick={toggleMobileSidebar}
+          aria-label={isMobileSidebarOpen ? "Close menu" : "Open menu"}
+          className="md:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition-colors"
+        >
+          {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+
+        {/* Shop Name */}
+        <div className="flex items-center gap-1.5 sm:gap-2 text-slate-800 font-bold text-xs sm:text-sm truncate">
+          <Building2 className="w-4 h-4 text-brand-600 flex-shrink-0" />
+          <span className="truncate max-w-[140px] xs:max-w-[190px] sm:max-w-[260px] md:max-w-none">
+            {shopSettings.shop_name || 'Jagdamba Cloth House'}
+          </span>
         </div>
-        <span className="text-slate-300 hidden sm:inline">|</span>
-        
+
+        <span className="text-slate-300 hidden lg:inline">|</span>
+
+        {/* Cloud/Desktop Mode Badge */}
         {isElectron ? (
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
+          <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
             <WifiOff className="w-3.5 h-3.5 text-brand-600" />
             <span>Desktop ERP</span>
           </div>
         ) : (
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-medium border border-brand-200/60">
+          <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-medium border border-brand-200/60">
             <Globe className="w-3.5 h-3.5 text-brand-600" />
             <span>Cloud Web ERP</span>
           </div>
         )}
 
+        {/* DB Status Badge */}
         {isDbConnected ? (
-          <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live SQLite Active
+          <span className="hidden sm:flex items-center gap-1 text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live SQLite
           </span>
         ) : (
-          <span className="flex items-center gap-1 text-[11px] font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Connecting to DB...
+          <span className="hidden sm:flex items-center gap-1 text-[11px] font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Connecting...
           </span>
         )}
       </div>
 
-      {/* Date, Time & Window Controls */}
-      <div className="flex items-center gap-4">
-        <div className="hidden sm:flex items-center gap-3 text-xs font-medium text-slate-500">
-          <div className="flex items-center gap-1">
+      {/* Right: Date, Time & Window Controls */}
+      <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+        <div className="hidden md:flex items-center gap-3 text-xs font-medium text-slate-500">
+          <div className="hidden lg:flex items-center gap-1">
             <Calendar className="w-3.5 h-3.5 text-slate-400" />
-            <span>{time.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</span>
+            <span>{time.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short' })}</span>
           </div>
           <div className="flex items-center gap-1 text-slate-700 font-semibold">
             <Clock className="w-3.5 h-3.5 text-brand-600" />
@@ -62,9 +78,14 @@ export function Header() {
           </div>
         </div>
 
-        {/* Electron Window Controls (Only rendered inside Electron App) */}
+        {/* Mobile Clock (Short) */}
+        <div className="md:hidden text-[11px] font-bold text-slate-600 font-mono bg-slate-100 px-2 py-1 rounded-lg">
+          {time.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+        </div>
+
+        {/* Electron Window Controls (Desktop App Only) */}
         {isElectron && (
-          <div className="flex items-center gap-1 border-l border-slate-200 pl-3">
+          <div className="flex items-center gap-1 border-l border-slate-200 pl-2 sm:pl-3">
             <button
               onClick={handleMinimize}
               className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-md transition-colors"

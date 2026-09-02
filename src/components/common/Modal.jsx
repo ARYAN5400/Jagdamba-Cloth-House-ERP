@@ -16,33 +16,33 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl'
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', duration: 0.3, bounce: 0 }}
-            className={`relative w-full ${maxWidth} bg-white rounded-2xl shadow-modal overflow-hidden z-10 border border-slate-100`}
+            className={`relative w-full ${maxWidth} max-w-[96vw] bg-white rounded-2xl shadow-modal overflow-hidden z-10 border border-slate-100 my-auto`}
           >
             {title && (
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-                <h3 className="font-semibold text-slate-800 text-lg">{title}</h3>
+              <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 bg-slate-50/50">
+                <h3 className="font-bold text-slate-800 text-base sm:text-lg truncate pr-2">{title}</h3>
                 <button
                   onClick={onClose}
-                  className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200/50 transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200/50 transition-colors flex-shrink-0"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             )}
-            <div className="p-6 max-h-[80vh] overflow-y-auto">{children}</div>
+            <div className="p-3.5 sm:p-6 max-h-[82vh] overflow-y-auto">{children}</div>
           </motion.div>
         </div>
       )}
